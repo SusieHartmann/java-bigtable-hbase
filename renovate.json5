@@ -1,0 +1,106 @@
+{
+  "extends": [
+    ":separateMajorReleases",
+    ":combinePatchMinorReleases",
+    ":ignoreUnstable",
+    ":prImmediately",
+    ":updateNotScheduled",
+    ":automergeDisabled",
+    ":ignoreModulesAndTests",
+    ":maintainLockFilesDisabled",
+    ":autodetectPinVersions"
+  ],
+  "ignorePaths": [
+    // ignore pom.xmls that are used as test subjects
+    "bigtable-test/bigtable-build-helper/src/it/**",
+    ".kokoro/requirements.txt"
+  ],
+  "packageRules": [
+    {
+      "packagePatterns": [
+        "^com.google.guava:"
+      ],
+      "versionScheme": "docker"
+    },
+    {
+      "packagePatterns": [
+        "*"
+      ],
+      "semanticCommitType": "deps",
+      "semanticCommitScope": null
+    },
+    {
+      "packagePatterns": [
+        "^org.apache.maven",
+        "^org.jacoco:",
+        "^org.codehaus.mojo:",
+        "^org.sonatype.plugins:",
+        "^com.coveo:",
+        "^com.google.cloud:google-cloud-shared-config"
+      ],
+      "semanticCommitType": "build",
+      "semanticCommitScope": "deps"
+    },
+    {
+      "packagePatterns": [
+        "^com.google.cloud.bigtable:bigtable-client-parent",
+        "^com.google.cloud:libraries-bom",
+        "^com.google.cloud.samples:shared-configuration"
+      ],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "deps"
+    },
+    {
+      "packagePatterns": [
+        "^junit:junit",
+        "^com.google.truth:truth",
+        "^org.mockito:mockito-core",
+        "^org.objenesis:objenesis",
+        "^truth.version",
+        "^junit.version",
+        "^hamcrest.version",
+        "^mockito.version"
+      ],
+      "semanticCommitType": "test",
+      "semanticCommitScope": "deps"
+    },
+    {
+      "packagePatterns": [
+        "^com.google.cloud:google-cloud-"
+      ],
+      "ignoreUnstable": false
+    },
+    {
+      "packagePatterns": [
+        "^com.fasterxml.jackson.core"
+      ],
+      "groupName": "jackson dependencies"
+    },
+    {
+      // pinned to avoid internal deps conflict between beam-sdks-java-core & beam-model-pipeline
+      "packagePatterns": ["^error_prone_annotations"],
+      "enabled": false
+    },
+    {
+      "packagePatterns": [
+        "^org.apache.maven.plugins:maven-shade-plugin"
+      ],
+      // Exclude version 3.3.0 due to https://issues.apache.org/jira/projects/MSHADE/issues/MSHADE-419
+      "allowedVersions": "(,3.3.0),(3.3.0,)"
+    },
+    {
+      "packagePatterns": [
+        "^com.google.cloud:google-cloud-bigtable",
+        "^com.google.cloud:google-cloud-bigtable-emulator-core",
+        "^com.google.cloud:google-cloud-bigtable-emulator",
+        "^com.google.cloud:google-cloud-shared-config",
+      ],
+      "groupName": "google-cloud-bigtable dependencies"
+    }
+  ],
+  "semanticCommits": true,
+  "dependencyDashboard": true,
+  "dependencyDashboardLabels": [
+    "type: process"
+  ]
+}

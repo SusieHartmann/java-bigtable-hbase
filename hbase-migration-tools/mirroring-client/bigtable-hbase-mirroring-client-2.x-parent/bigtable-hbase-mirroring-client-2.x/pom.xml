@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2021 Google LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.google.cloud.bigtable</groupId>
+    <artifactId>bigtable-hbase-mirroring-client-2.x-parent</artifactId>
+    <version>0.7.1-SNAPSHOT</version> <!-- {x-version-update:bigtable-hbase-mirroring:current} -->
+  </parent>
+
+  <artifactId>bigtable-hbase-mirroring-client-2.x</artifactId>
+  <packaging>jar</packaging>
+  <version>0.7.1-SNAPSHOT</version> <!-- {x-version-update:bigtable-hbase-mirroring:current} -->
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>
+    Bigtable/HBase Mirroring Client conforming to HBase API 2.x. Uses hbase-shaded-client and exposes all dependencies.
+  </description>
+
+  <dependencies>
+    <!-- Environment deps first -->
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-shaded-client</artifactId>
+      <version>${hbase2.version}</version>
+    </dependency>
+
+    <!-- Project deps -->
+    <dependency>
+      <groupId>com.google.cloud.bigtable</groupId>
+      <artifactId>bigtable-hbase-mirroring-client-core</artifactId>
+      <version>0.7.1-SNAPSHOT</version> <!-- {x-version-update:bigtable-hbase-mirroring:current} -->
+      <scope>compile</scope>
+
+      <exclusions>
+        <!-- Exclude the environment deps, as they are declared explicitly above -->
+        <exclusion>
+          <groupId>org.apache.hbase</groupId>
+          <artifactId>hbase-shaded-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ch.qos.reload4j</groupId>
+          <artifactId>reload4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>net.javacrumbs.future-converter</groupId>
+      <artifactId>future-converter-java8-guava</artifactId>
+      <version>1.2.0</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- Test dependencies-->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>${truth.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.bigtable</groupId>
+      <artifactId>bigtable-hbase-mirroring-client-core</artifactId>
+      <version>0.7.1-SNAPSHOT</version> <!-- {x-version-update:bigtable-hbase-mirroring:current} -->
+      <type>test-jar</type>
+      <scope>test</scope>
+      <exclusions>
+        <!-- We only want the test helpers -->
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.google.cloud.bigtable.test</groupId>
+        <artifactId>bigtable-build-helper</artifactId>
+        <version>2.12.1-SNAPSHOT</version> <!-- {x-version-update:bigtable-client-parent:current} -->
+
+        <executions>
+          <execution>
+            <id>verify-mirror-deps-hbase</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>verify-mirror-deps</goal>
+            </goals>
+            <configuration>
+              <targetDependencies>
+                <!-- make sure that we are a strict superset of hbase -->
+                <targetDependency>org.apache.hbase:hbase-shaded-client</targetDependency>
+              </targetDependencies>
+              <ignoredDependencies>
+              </ignoredDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
